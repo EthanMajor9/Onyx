@@ -1,6 +1,8 @@
 #ifndef ONYX_H
 #define ONYX_H
 
+#include "datastructures.h"
+#include "commands.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -15,5 +17,6 @@
 void printPrompt(void);
 void printASCIIArt(void);
 void processCommands(void);
+void initCommands(command_hash_table* table);
 
 #endif /* ONYX_H */

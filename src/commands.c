@@ -1,4 +1,5 @@
 #include "../inc/commands.h"
+#include "../inc/onyx.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -13,6 +14,8 @@ char* getcmd(void) {
         return NULL;
     }
 
+    clearCR(input);
+
     // Check if the input is greater than INPUT_CHAR_LIMIT
     if (strlen(input) == INPUT_CHAR_LIMIT - 1 && input[INPUT_CHAR_LIMIT - 2] != '\n') {
         printf("Error: input is too long.\n");
@@ -21,4 +24,18 @@ char* getcmd(void) {
     }
 
     return input;
+}
+
+void clearScreen(void) {
+    system("clear");
+}
+
+void clearCR(char buffer[])
+{
+	// Newline character search and assignment to null terminator
+	char* whereCR = strchr(buffer, '\n');
+	if (whereCR != NULL)
+	{
+		*whereCR = '\0';
+	}
 }

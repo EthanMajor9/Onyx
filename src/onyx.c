@@ -1,5 +1,4 @@
 #include "../inc/onyx.h"
-#include "../inc/commands.h"
 
 const char *ASCIILogo[ASCII_ARR_SIZE] = { 
     "\033[31m .----------------.  .-----------------. .----------------.  .----------------. \n",
@@ -14,8 +13,6 @@ const char *ASCIILogo[ASCII_ARR_SIZE] = {
     "| '--------------' || '--------------' || '--------------' || '--------------' |\n",
     " '----------------'  '----------------'  '----------------'  '----------------' \n"
 };
-
-
 
 void printPrompt(void) {
     char cwd[CWD_SIZE];
@@ -32,6 +29,7 @@ void printPrompt(void) {
         exit(EXIT_FAILURE);
     }
 
+    // Print prompt
     printf("\033[31m%s\033[33m@\033[36m%s:\033[32m%s \033[33m> ", getlogin(), hostname, cwd);
     fflush(stdout);
 }
@@ -51,10 +49,26 @@ void printASCIIArt(void) {
 
 void processCommands(void) {
     int running = 1;
+    command_hash_table* cmd_table = create_table();
+    initCommands(cmd_table);
 
     // Main processing loop
     while(running) {
         printPrompt();
         char* cmd = getcmd();
+
+        command_function cmd_to_exec = command_lookup(cmd_table, cmd);
+
+        if(cmd_to_exec != NULL) {
+            cmd_to_exec();
+        } else {
+            printf("Command not found: %s\n", cmd);
+        }
     }
+
+    free_table(cmd_table);
+}
+
+void initCommands(command_hash_table* table) {
+    insert_to_table(table, "clear", clearScreen);
 }
