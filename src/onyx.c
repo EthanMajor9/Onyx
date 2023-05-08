@@ -1,19 +1,5 @@
 #include "../inc/onyx.h"
 
-const char *ASCIILogo[ASCII_ARR_SIZE] = { 
-    "\033[31m .----------------.  .-----------------. .----------------.  .----------------. \n",
-    "| .--------------. || .--------------. || .--------------. || .--------------. |\n",
-    "| |     ____     | || |  ____  _____  | || |  ____  ____  | || |  ____  ____  | |\n",
-    "| |   .'    `.   | || | |_   \\|_   _| | || | |_  _||_  _| | || | |_  _||_  _| | |\n",
-    "| |  /  .--.  \\  | || |   |   \\ | |   | || |   \\ \\  / /   | || |   \\ \\  / /   | |\n",
-    "| |  | |    | |  | || |   | |\\ \\| |   | || |    \\ \\/ /    | || |    > `' <    | |\n",
-    "| |  \\  `--'  /  | || |  _| |_\\   |_  | || |    _|  |_    | || |  _/ /'`\\ \\_  | |\n",
-    "| |   `.____.'   | || | |_____|\\____| | || |   |______|   | || | |____||____| | |\n",
-    "| |              | || |               | || |              | || |              | |\n",
-    "| '--------------' || '--------------' || '--------------' || '--------------' |\n",
-    " '----------------'  '----------------'  '----------------'  '----------------' \n"
-};
-
 void printPrompt(void) {
     char cwd[CWD_SIZE];
     char hostname[HOSTNAME_SIZE];
@@ -34,29 +20,15 @@ void printPrompt(void) {
     fflush(stdout);
 }
 
-
-void printASCIIArt(void) {
-    system("clear");
-
-    // Print out ASCII Logo
-    for(int i = 0; i < 11; i++) {
-        printf("%s", ASCIILogo[i]);
-    }
-
-    fflush(stdout);
-}
-
-
 void processCommands(void) {
     int running = 1;
     command_hash_table* cmd_table = create_table();
     initCommands(cmd_table);
-
+    
     // Main processing loop
     while(running) {
         printPrompt();
         char* cmd = getcmd();
-
         command_function cmd_to_exec = command_lookup(cmd_table, cmd);
 
         if(cmd_to_exec != NULL) {
@@ -64,11 +36,47 @@ void processCommands(void) {
         } else {
             printf("Command not found: %s\n", cmd);
         }
+
+        free(cmd);
     }
 
     free_table(cmd_table);
 }
 
+char* getcmd(void) {
+    char *input = malloc(sizeof(char) * INPUT_CHAR_LIMIT);
+
+    // Read command from stdin
+    if (fgets(input, INPUT_CHAR_LIMIT, stdin) == NULL) {
+        printf("Error: failed to read input.\n");
+        free(input);
+        return NULL;
+    }
+
+    clearCR(input);
+
+    // Check if the input is greater than INPUT_CHAR_LIMIT
+    if (strlen(input) == INPUT_CHAR_LIMIT - 1 && input[INPUT_CHAR_LIMIT - 2] != '\n') {
+        printf("Error: input is too long.\n");
+        free(input);
+        return NULL;
+    }
+
+    return input;
+}
+
+void clearCR(char buffer[])
+{
+	// Newline character search and assignment to null terminator
+	char* whereCR = strchr(buffer, '\n');
+	if (whereCR != NULL)
+	{
+		*whereCR = '\0';
+	}
+}
+
 void initCommands(command_hash_table* table) {
-    insert_to_table(table, "clear", clearScreen);
+    insert_command_to_table(table, "clear", clearScreen);
+    insert_command_to_table(table, "art", printASCIIArt);
+    insert_command_to_table(table, "version", printVersion);
 }

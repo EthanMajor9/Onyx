@@ -1,11 +1,8 @@
 #ifndef ONYX_H
 #define ONYX_H
 
-#include "datastructures.h"
-#include "commands.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
+#include "hashtable.h"
+#include "misc_commands.h"
 
 // Constant definitions
 #define VERSION 1.0f
@@ -15,8 +12,9 @@
 
 // Function declarations
 void printPrompt(void);
-void printASCIIArt(void);
 void processCommands(void);
 void initCommands(command_hash_table* table);
+char* getcmd(void);
+void clearCR(char buffer[]);
 
 #endif /* ONYX_H */

@@ -1,28 +1,38 @@
-# FINAL BINARY TARGET
-./bin/Onyx : ./obj/onyx.o ./obj/main.o ./obj/commands.o ./obj/datastructures.o
-	cc ./obj/onyx.o ./obj/main.o ./obj/commands.o ./obj/datastructures.o -o ./bin/Onyx
+# Compiler settings
+CC = cc
 
-# =======================================================
-#                     Dependencies
-# =======================================================          
-./obj/main.o : ./src/main.c ./inc/onyx.h
-	cc -c ./src/main.c -o ./obj/main.o
+# Directories
+SRCDIR = ./src
+INCDIR = ./inc
+OBJDIR = ./obj
+BINDIR = ./bin
 
-./obj/onyx.o : ./src/onyx.c ./inc/onyx.h ./inc/datastructures.h
-	cc -c ./src/onyx.c -o ./obj/onyx.o
+# Object files
+OBJECTS = $(OBJDIR)/onyx.o \
+		  $(OBJDIR)/main.o \
+		  $(OBJDIR)/misc_commands.o \
+		  $(OBJDIR)/hashtable.o
 
-./obj/commands.o : ./src/commands.c ./inc/commands.h ./inc/datastructures.h
-	cc -c ./src/commands.c -o ./obj/commands.o
+# Final binary target
+$(BINDIR)/Onyx : $(OBJECTS)
+	$(CC) $(OBJECTS) -o $@
 
-./obj/datastructures.o : ./src/datastructures.c ./inc/datastructures.h ./inc/commands.h
-	cc -c ./src/datastructures.c -o ./obj/datastructures.o
+# Dependencies
+$(OBJDIR)/main.o: $(SRCDIR)/main.c $(INCDIR)/onyx.h
+	$(CC) $(CFLAGS) -c $< -o $@
 
+$(OBJDIR)/onyx.o: $(SRCDIR)/onyx.c $(INCDIR)/onyx.h $(INCDIR)/hashtable.h
+	$(CC) $(CFLAGS) -c $< -o $@
 
-# =======================================================
+$(OBJDIR)/misc_commands.o: $(SRCDIR)/misc_commands.c $(INCDIR)/misc_commands.h $(INCDIR)/hashtable.h
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(OBJDIR)/hashtable.o: $(SRCDIR)/hashtable.c $(INCDIR)/hashtable.h
+	$(CC) $(CFLAGS) -c $< -o $@
+
 # Other targets
-# ======================================================= 
-all : ./bin/Onyx
+all: $(BINDIR)/Onyx
 
 clean:
-	rm -f ./bin/*
-	rm -f ./obj/*
+	rm -f $(BINDIR)/*
+	rm -f $(OBJDIR)/*

@@ -9,8 +9,8 @@
 #define INPUT_CHAR_LIMIT 2048
 
 // Function prototypes
-char* getcmd(void);
 void clearScreen(void);
-void clearCR(char buffer[]);
+void printVersion(void);
+void printASCIIArt(void);
 
 #endif

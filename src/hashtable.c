@@ -1,5 +1,4 @@
-#include "../inc/datastructures.h"
-#include "../inc/commands.h"
+#include "../inc/hashtable.h"
 
 /*
 * TITLE: djb2
@@ -33,7 +32,7 @@ command_hash_table* create_table() {
     return table;
 }
 
-void insert_to_table(command_hash_table* table, char* key, command_function value) {
+void insert_command_to_table(command_hash_table* table, char* key, command_function value) {
     int index = djb2(key);
 
     // Allocate and create command with given parameters
