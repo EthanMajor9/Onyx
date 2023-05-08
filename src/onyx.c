@@ -1,5 +1,7 @@
 #include "../inc/onyx.h"
 
+volatile int running = 1;
+
 void printPrompt(void) {
     char cwd[CWD_SIZE];
     char hostname[HOSTNAME_SIZE];
@@ -21,7 +23,6 @@ void printPrompt(void) {
 }
 
 void processCommands(void) {
-    int running = 1;
     command_hash_table* cmd_table = create_table();
     initCommands(cmd_table);
     
@@ -29,10 +30,14 @@ void processCommands(void) {
     while(running) {
         printPrompt();
         char* cmd = getcmd();
-        command_function cmd_to_exec = command_lookup(cmd_table, cmd);
+        command_entry* cmd_to_exec = command_lookup(cmd_table, cmd);
 
         if(cmd_to_exec != NULL) {
-            cmd_to_exec();
+            if(strcmp(cmd_to_exec->key, "help") == 0) {
+                cmd_to_exec->value(cmd_table);
+            } else {
+                cmd_to_exec->value(NULL);
+            }
         } else {
             printf("Command not found: %s\n", cmd);
         }
@@ -76,7 +81,8 @@ void clearCR(char buffer[])
 }
 
 void initCommands(command_hash_table* table) {
-    insert_command_to_table(table, "clear", clearScreen);
-    insert_command_to_table(table, "art", printASCIIArt);
-    insert_command_to_table(table, "version", printVersion);
+    insert_command_to_table(table, "clear", clearScreen, "Clears the screen");
+    insert_command_to_table(table, "art", printASCIIArt, "Prints out the Onyx ASCII art logo");
+    insert_command_to_table(table, "version", printVersion, "Prints out the current version of Onyx");
+    insert_command_to_table(table, "help", help, "Displays help information to the user");
 }

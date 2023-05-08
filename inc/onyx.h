@@ -1,7 +1,8 @@
+#pragma once
 #ifndef ONYX_H
 #define ONYX_H
 
-#include "hashtable.h"
+#include "command_hashtable.h"
 #include "misc_commands.h"
 
 // Constant definitions

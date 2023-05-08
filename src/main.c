@@ -2,9 +2,9 @@
 
 int main(int argc, char* argv[]) {
     // Print header and art
-    clearScreen();
-    printASCIIArt();
-    printVersion();
+    clearScreen(NULL);
+    printASCIIArt(NULL);
+    printVersion(NULL);
     processCommands();
     
     return 0;

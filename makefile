@@ -11,7 +11,7 @@ BINDIR = ./bin
 OBJECTS = $(OBJDIR)/onyx.o \
 		  $(OBJDIR)/main.o \
 		  $(OBJDIR)/misc_commands.o \
-		  $(OBJDIR)/hashtable.o
+		  $(OBJDIR)/command_hashtable.o
 
 # Final binary target
 $(BINDIR)/Onyx : $(OBJECTS)
@@ -19,16 +19,16 @@ $(BINDIR)/Onyx : $(OBJECTS)
 
 # Dependencies
 $(OBJDIR)/main.o: $(SRCDIR)/main.c $(INCDIR)/onyx.h
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c -g $< -o $@
 
-$(OBJDIR)/onyx.o: $(SRCDIR)/onyx.c $(INCDIR)/onyx.h $(INCDIR)/hashtable.h
-	$(CC) $(CFLAGS) -c $< -o $@
+$(OBJDIR)/onyx.o: $(SRCDIR)/onyx.c $(INCDIR)/onyx.h $(INCDIR)/command_hashtable.h
+	$(CC) $(CFLAGS) -c -g $< -o $@
 
-$(OBJDIR)/misc_commands.o: $(SRCDIR)/misc_commands.c $(INCDIR)/misc_commands.h $(INCDIR)/hashtable.h
-	$(CC) $(CFLAGS) -c $< -o $@
+$(OBJDIR)/misc_commands.o: $(SRCDIR)/misc_commands.c $(INCDIR)/misc_commands.h $(INCDIR)/command_hashtable.h
+	$(CC) $(CFLAGS) -c -g $< -o $@
 
-$(OBJDIR)/hashtable.o: $(SRCDIR)/hashtable.c $(INCDIR)/hashtable.h
-	$(CC) $(CFLAGS) -c $< -o $@
+$(OBJDIR)/command_hashtable.o: $(SRCDIR)/command_hashtable.c $(INCDIR)/command_hashtable.h
+	$(CC) $(CFLAGS) -c -g $< -o $@
 
 # Other targets
 all: $(BINDIR)/Onyx

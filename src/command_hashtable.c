@@ -1,4 +1,4 @@
-#include "../inc/hashtable.h"
+#include "../inc/command_hashtable.h"
 
 /*
 * TITLE: djb2
@@ -32,20 +32,26 @@ command_hash_table* create_table() {
     return table;
 }
 
-void insert_command_to_table(command_hash_table* table, char* key, command_function value) {
+void insert_command_to_table(command_hash_table* table, const char* key, command_function value, const char* desc) {
     int index = djb2(key);
 
     // Allocate and create command with given parameters
     command_entry* command = malloc(sizeof(command_entry));
-    command->key = key;
+    command->key = strdup(key);
     command->value = value;
+    command->desc = strdup(desc);
+
+    // Insert into the hash table at the hashed index
+    while (table->entries[index] != NULL) {
+        index = (index + 1) % MAX_TABLE_SIZE; // probe for the next available index
+    }
 
     // Insert into the hash table at the hashed index
     table->entries[index] = command;
     table->size++;
 }
 
-command_function command_lookup(command_hash_table* table, char* key) {
+command_entry* command_lookup(command_hash_table* table, const char* key) {
     int index = djb2(key);
 
     command_entry* command = table->entries[index];
@@ -55,7 +61,7 @@ command_function command_lookup(command_hash_table* table, char* key) {
     }
     
     if(strcmp(command->key, key) == 0) {
-        return command->value;
+        return command;
     } else {
         return NULL;
     }
@@ -65,6 +71,7 @@ command_function command_lookup(command_hash_table* table, char* key) {
 void free_table(command_hash_table* table) {
     for(int i = 0; i < table->size; i++) {
         free(table->entries[i]->key);
+        free(table->entries[i]->desc);
         free(table->entries[i]);
     }
 

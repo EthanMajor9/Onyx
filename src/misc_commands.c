@@ -15,11 +15,11 @@ const char *ASCIILogo[ASCII_ARR_SIZE] = {
     " '----------------'  '----------------'  '----------------'  '----------------' \n"
 };
 
-void clearScreen(void) {
+void clearScreen(void* param) {
     printf("\033[2J\033[H");
 }
 
-void printASCIIArt(void) {
+void printASCIIArt(void* param) {
     // Print out ASCII Logo
     for(int i = 0; i < 11; i++) {
         printf("%s", ASCIILogo[i]);
@@ -28,7 +28,26 @@ void printASCIIArt(void) {
     fflush(stdout);
 }
 
-void printVersion(void) {
+void printVersion(void* param) {
     printf("\n\033[31mONYX \033[33m- \033[31mVERSION \033[32m%.1f.0\n\n", VERSION);
+    fflush(stdout);
+}
+
+
+void help(void* table) {
+    command_hash_table* cmd_table = (command_hash_table*)table;
+
+    printf("\nCommand\t|\tDescription\n \
+                      -------------------\n");
+
+    for(int i = 0; i < MAX_TABLE_SIZE; i++) {
+        if(cmd_table->entries[i] == NULL) {
+            continue;
+        } else {
+            printf("%-8s - %s\n", cmd_table->entries[i]->key, cmd_table->entries[i]->desc);
+        }
+    }
+
+    printf("\n");
     fflush(stdout);
 }
